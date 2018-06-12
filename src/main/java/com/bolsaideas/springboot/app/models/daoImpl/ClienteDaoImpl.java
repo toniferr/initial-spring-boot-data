@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bolsaideas.springboot.app.models.daoInterface.ClienteDaoInterface;
 import com.bolsaideas.springboot.app.models.entity.Cliente;
 
+//@Repository("clienteDaoImp") En el caso de más de una implementación. Se usa en Qualifier
 @Repository
 public class ClienteDaoImpl implements ClienteDaoInterface {
 
