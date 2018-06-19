@@ -8,8 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 //@Table (name="") cuando el nombre de la tabla no es el mismo que el de la clase
@@ -25,13 +31,26 @@ public class Cliente implements Serializable{
 	private Long id;
 	
 	//@Column(name="") cuando el nombre de la columna no es el mismo que del atributo
+	@NotEmpty
 	private String nombre;
+	
+	@NotEmpty
 	private String apellido;
+	
+	@Email
 	private String email;
 	
+	@NotNull
 	@Column(name ="create_at")
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern="yyyy-mm-dd") //por defecto mm/dd/yyyy
 	private Date createAt;
+	
+//	@PrePersist      //se usa para añadir la fecha sin formulario
+//	public void prePersist() {
+//		createAt = new Date();
+//	}
+	
 	public Long getId() {
 		return id;
 	}
