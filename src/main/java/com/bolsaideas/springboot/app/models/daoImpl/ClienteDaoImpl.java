@@ -17,9 +17,9 @@ public class ClienteDaoImpl implements ClienteDaoInterface {
 
 	@PersistenceContext
 	private EntityManager em;
-	
+
 	@SuppressWarnings("unchecked")
-	@Transactional(readOnly = true) //si es de escritura se suprime
+	@Transactional(readOnly = true) // si es de escritura se suprime
 	@Override
 	public List<Cliente> findAll() {
 		// TODO Auto-generated method stub
@@ -29,7 +29,16 @@ public class ClienteDaoImpl implements ClienteDaoInterface {
 	@Transactional
 	@Override
 	public void save(Cliente cliente) {
-		em.persist(cliente);
+		if (cliente.getId() != null && cliente.getId() > 0) {
+			em.merge(cliente);
+		} else {
+			em.persist(cliente);
+		}
+	}
+
+	@Override
+	public Cliente findOne(Long id) {
+		return em.find(Cliente.class, id);
 	}
 
 }
