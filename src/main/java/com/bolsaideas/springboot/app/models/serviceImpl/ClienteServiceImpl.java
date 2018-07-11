@@ -19,7 +19,7 @@ public class ClienteServiceImpl implements ClienteServiceInterface {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Cliente> findAll() {
-		return clienteDao.findAll();
+		return (List<Cliente>) clienteDao.findAll();
 	}
 
 	@Override
