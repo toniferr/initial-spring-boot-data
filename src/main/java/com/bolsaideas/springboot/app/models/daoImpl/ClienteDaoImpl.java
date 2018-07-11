@@ -19,14 +19,14 @@ public class ClienteDaoImpl implements ClienteDaoInterface {
 	private EntityManager em;
 
 	@SuppressWarnings("unchecked")
-	@Transactional(readOnly = true) // si es de escritura se suprime
+	//@Transactional(readOnly = true) // si es de escritura se suprime. Se pasan al service
 	@Override
 	public List<Cliente> findAll() {
 		// TODO Auto-generated method stub
 		return em.createQuery("from Cliente").getResultList();
 	}
 
-	@Transactional
+	//@Transactional
 	@Override
 	public void save(Cliente cliente) {
 		if (cliente.getId() != null && cliente.getId() > 0) {
@@ -37,13 +37,13 @@ public class ClienteDaoImpl implements ClienteDaoInterface {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	//@Transactional(readOnly = true)
 	public Cliente findOne(Long id) {
 		return em.find(Cliente.class, id);
 	}
 
 	@Override
-	@Transactional
+	//@Transactional
 	public void delete(Long id) {
 		em.remove(findOne(id));
 	}

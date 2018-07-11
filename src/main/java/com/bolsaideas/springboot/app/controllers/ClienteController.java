@@ -17,6 +17,7 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.bolsaideas.springboot.app.models.daoInterface.ClienteDaoInterface;
 import com.bolsaideas.springboot.app.models.entity.Cliente;
+import com.bolsaideas.springboot.app.models.serviceInterface.ClienteServiceInterface;
 
 @Controller
 @SessionAttributes("cliente") // se guarda en los atributos de la sesión el objeto cliente
@@ -24,12 +25,15 @@ public class ClienteController {
 
 	// @Qualifier("clienteDaoImpl") definido el nombre en @Repository
 	@Autowired
-	private ClienteDaoInterface clienteDao;
+	private ClienteServiceInterface clienteService;
+	// private ClienteDaoInterface clienteDao; se implementa el service y el dao va
+	// al service
 
 	@RequestMapping(value = "/listar", method = RequestMethod.GET) // se puede usar tambien getMapping
 	public String listar(Model model) {
 		model.addAttribute("titulo", "Listado de clientes");
-		model.addAttribute("clientes", clienteDao.findAll());
+		// model.addAttribute("clientes", clienteDao.findAll());
+		model.addAttribute("clientes", clienteService.findAll());
 		return "listar";
 	}
 
@@ -46,7 +50,8 @@ public class ClienteController {
 		Cliente cliente = null;
 
 		if (id > 0) {
-			cliente = clienteDao.findOne(id);
+			// cliente = clienteDao.findOne(id);
+			cliente = clienteService.findOne(id);
 		} else {
 			return "redirect:/listar";
 		}
@@ -65,7 +70,8 @@ public class ClienteController {
 			model.addAttribute("titulo", "Formulario de cliente");
 			return "form";
 		}
-		clienteDao.save(cliente);
+		// clienteDao.save(cliente);
+		clienteService.save(cliente);
 		status.setComplete(); // se elimina el objeto cliente de la session
 		return "redirect:listar";
 	}
@@ -74,7 +80,8 @@ public class ClienteController {
 	public String editar(@PathVariable(value = "id") Long id) {
 
 		if (id > 0) {
-			clienteDao.delete(id);
+			// clienteDao.delete(id);
+			clienteService.delete(id);
 		}
 		return "redirect:/listar";
 	}
