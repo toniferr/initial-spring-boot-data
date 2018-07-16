@@ -4,7 +4,7 @@
 <meta charset="ISO-8859-1" />
 <title th:text="'Spring Boot + Thymeleaf + JPA'+${titulo}">Insert title here</title>
 <link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" />
+	th:href="@{/css/bootstrap.min.css}" />
 </head>
 <body>
 	<header th:fragment="header">
@@ -37,8 +37,8 @@
 		</p>
 		<!--  Optional JavaScript -->
 		<!--  jQuery first, then Bootstrap JS -->
-		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-	 	<script src="https://maxcdn.bootstrapcdn.com/boostrap/4.0.0-beta/js/boostrap.min.js"></script>
+		<script th:src="@{/js/jquery-3.2.1.min.js}"></script> <!-- slim no tiene AJAX -->
+	 	<script th:src="@{/js/boostrap.min.js}"></script>
 	 </footer>
 </body>
 </html>
