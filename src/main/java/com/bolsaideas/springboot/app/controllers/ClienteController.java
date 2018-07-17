@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bolsaideas.springboot.app.models.daoInterface.ClienteDaoInterface;
 import com.bolsaideas.springboot.app.models.entity.Cliente;
@@ -46,13 +47,18 @@ public class ClienteController {
 	}
 
 	@RequestMapping(value = "/form/{id}")
-	public String editar(@PathVariable(value = "id") Long id, Map<String, Object> model) {
+	public String editar(@PathVariable(value = "id") Long id, Map<String, Object> model, RedirectAttributes flash) {
 		Cliente cliente = null;
 
 		if (id > 0) {
 			// cliente = clienteDao.findOne(id);
 			cliente = clienteService.findOne(id);
+			if (cliente==null) {
+				flash.addFlashAttribute("error", "No existe el cliente");
+				return "redirect:/listar";
+			}
 		} else {
+			flash.addFlashAttribute("error", "No existe el cliente");
 			return "redirect:/listar";
 		}
 		model.put("cliente", cliente);
@@ -61,7 +67,7 @@ public class ClienteController {
 	}
 
 	@RequestMapping(value = "/form", method = RequestMethod.POST)
-	public String guardar(@Valid Cliente cliente, BindingResult result, Model model, SessionStatus status) { // status
+	public String guardar(@Valid Cliente cliente, BindingResult result, RedirectAttributes flash, Model model, SessionStatus status) { // status
 																												// si
 																												// usas
 																												// SessionAttributes
@@ -70,19 +76,23 @@ public class ClienteController {
 			model.addAttribute("titulo", "Formulario de cliente");
 			return "form";
 		}
+		
+		String flashMessage = (cliente.getId()!=null)? "Cliente editado correctamente" : "Cliente creado correctamente";
 		// clienteDao.save(cliente);
 		clienteService.save(cliente);
 		status.setComplete(); // se elimina el objeto cliente de la session
+		flash.addFlashAttribute("success", flashMessage);
 		return "redirect:listar";
 	}
 
 	@RequestMapping(value = "/eliminar/{id}")
-	public String editar(@PathVariable(value = "id") Long id) {
+	public String editar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 
 		if (id > 0) {
 			// clienteDao.delete(id);
 			clienteService.delete(id);
 		}
+		flash.addFlashAttribute("success", "Cliente borrado correctamente");
 		return "redirect:/listar";
 	}
 
