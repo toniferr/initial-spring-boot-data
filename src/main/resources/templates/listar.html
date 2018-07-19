@@ -59,10 +59,12 @@
 								th:href="@{/form/} + ${cliente.id}" th:text="'editar'" /></td>
 							<td><a class="btn btn-danger btn-xs"
 								th:href="@{/eliminar/} + ${cliente.id}" th:text="'eliminar'"
-								onclick="return confirm('Estás seguro?');" /></td>
+								onclick="return confirm('Estas seguro?');" /></td>
 						</tr>
 					</tbody>
 				</table>
+				
+				<nav th:replace="paginator-nav :: paginator"></nav>
 			</div>
 		</div>
 	</div>
