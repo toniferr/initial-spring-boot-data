@@ -46,6 +46,8 @@ public class Cliente implements Serializable{
 	@DateTimeFormat(pattern="yyyy-mm-dd") //por defecto mm/dd/yyyy
 	private Date createAt;
 	
+	private String foto;
+	
 //	@PrePersist      //se usa para añadir la fecha sin formulario
 //	public void prePersist() {
 //		createAt = new Date();
@@ -81,6 +83,11 @@ public class Cliente implements Serializable{
 	public void setCreateAt(Date createAt) {
 		this.createAt = createAt;
 	}
-	
+	public String getFoto() {
+		return foto;
+	}
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
 	
 }

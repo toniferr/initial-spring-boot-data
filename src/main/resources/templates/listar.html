@@ -1,37 +1,17 @@
 <!DOCTYPE html>
 <html xmls:th="http://www.thymeleaf.org">
 <head th:replace="layout/layout :: head">
-<!-- <meta charset="ISO-8859-1" /> -->
-<!-- <title th:text="${titulo}">Insert title here</title> -->
-<!-- <link rel="stylesheet" -->
-<!-- 	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" /> -->
 </head>
 <body>
 
 	<header th:replace="layout/layout :: header"></header>
-	<!-- 	<nav class="navbar navbar-expand-md navbar-dark bg-dark"> -->
-	<!-- 		<a class="navbar-brand" href="#">Spring Boot</a> -->
-	<!-- 		<button class="navbar-toggler" type="button" data-toggle="collapse" -->
-	<!-- 			aria-label="Toggle navigation"> -->
-	<!-- 			<span class="navbar-toggler-icon"></span> -->
-	<!-- 		</button> -->
-	<!-- 		<div class="collapse navbar-collapse"> -->
-	<!-- 			<ul class="navbar-nav mr-auto"> -->
-	<!-- 				<li class="nav-item active"><a class="nav-link" href="#">Home</a></li> -->
-	<!-- 				<li class="nav-item"><a class="nav-link" href="#about" -->
-	<!-- 					th:href="@{/listar}">Cliente</a></li> -->
-	<!-- 			</ul> -->
-	<!-- 		</div> -->
-	<!-- 	</nav> -->
 
 	<div class="container py-4">
 
 		<div class="card bg-light">
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
-				<!-- 				<h1 -->
-				<!-- 					class="text-secondary border border-success border-top-0 border-left-0 border-right-0" -->
-				<!-- 					th:text="${titulo}"></h1> -->
+
 				<h4 class="card-title">
 					<a th:href="@{/form}" class="btn btn-primary btn-xs">Crear
 						cliente</a>
