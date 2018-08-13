@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,6 +38,19 @@ public class ClienteController {
 	private ClienteServiceInterface clienteService;
 	// private ClienteDaoInterface clienteDao; se implementa el service y el dao va
 	// al service
+	
+	@GetMapping(value="/ver/{id}")
+	public String ver(@PathVariable(value="id") Long id, Map<String,Object> model, RedirectAttributes flash) {
+		
+		Cliente cliente = clienteService.findOne(id);
+		if (cliente==null) {
+			flash.addFlashAttribute("error","El cliente no existe en la base de datos");
+			return "redirect:/listar";
+		}
+		model.put("cliente", cliente);
+		model.put("titulo", "Detalle cliente: " + cliente.getNombre());
+		return "ver";
+	}
 
 	@RequestMapping(value = "/listar", method = RequestMethod.GET) // se puede usar tambien getMapping
 	public String listar(@RequestParam(name="page", defaultValue="0") int page, Model model) {
@@ -104,8 +118,7 @@ public class ClienteController {
 				
 				cliente.setFoto(foto.getOriginalFilename());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				flash.addFlashAttribute("error","No se ha subido correctamente "+foto.getName());
 			}
 			
 		}
