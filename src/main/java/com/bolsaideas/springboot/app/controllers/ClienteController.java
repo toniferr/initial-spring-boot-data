@@ -5,9 +5,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,6 +41,8 @@ public class ClienteController {
 	private ClienteServiceInterface clienteService;
 	// private ClienteDaoInterface clienteDao; se implementa el service y el dao va
 	// al service
+	
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@GetMapping(value="/ver/{id}")
 	public String ver(@PathVariable(value="id") Long id, Map<String,Object> model, RedirectAttributes flash) {
@@ -110,11 +115,19 @@ public class ClienteController {
 		if(!foto.isEmpty()) {
 //			Path directorioRecursos = Paths.get("src//main//resources//static//upload"); path interno al proyecto
 //			String rootPath = directorioRecursos.toFile().getAbsolutePath(); path interno al proyecto
-			String rootPath = "C://Temp//upload";
+//			String rootPath = "C://Temp//upload"; //directorio externo pero en cliente, no en servidor
+			String uniqueFilename = UUID.randomUUID().toString()+"_"+foto.getOriginalFilename();
+			Path rootPath = Paths.get("upload").resolve(uniqueFilename); /*C-SpringBoot-workspace-spring-boot-data-upload*/
+			Path rootAbsolutPath = rootPath.toAbsolutePath();
+			
+			log.info("rootPath: "+ rootPath);
+			log.info("rootAbsolutPath: "+rootAbsolutPath);
+			
 			try {
-				byte[] bytes = foto.getBytes();
-				Path rutaCompleta = Paths.get(rootPath + "//" + foto.getOriginalFilename());
-				Files.write(rutaCompleta, bytes);
+				Files.copy(foto.getInputStream(), rootAbsolutPath);
+//				byte[] bytes = foto.getBytes();
+//				Path rutaCompleta = Paths.get(rootPath + "//" + foto.getOriginalFilename());
+//				Files.write(rutaCompleta, bytes);
 				flash.addFlashAttribute("info","Ha subido correctamente "+foto.getName());
 				
 				cliente.setFoto(foto.getOriginalFilename());
