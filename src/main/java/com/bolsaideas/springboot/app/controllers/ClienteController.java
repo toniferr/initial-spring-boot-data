@@ -33,23 +33,20 @@ import com.bolsaideas.springboot.app.models.serviceInterface.ClienteServiceInter
 import com.bolsaideas.springboot.app.util.paginator.PageRender;
 
 @Controller
-@SessionAttributes("cliente") // se guarda en los atributos de la sesión el objeto cliente
+@SessionAttributes("cliente")
 public class ClienteController {
 
-	// @Qualifier("clienteDaoImpl") definido el nombre en @Repository
 	@Autowired
 	private ClienteServiceInterface clienteService;
-	// private ClienteDaoInterface clienteDao; se implementa el service y el dao va
-	// al service
-	
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	
-	@GetMapping(value="/ver/{id}")
-	public String ver(@PathVariable(value="id") Long id, Map<String,Object> model, RedirectAttributes flash) {
-		
+
+	@GetMapping(value = "/ver/{id}")
+	public String ver(@PathVariable(value = "id") Long id, Map<String, Object> model, RedirectAttributes flash) {
+
 		Cliente cliente = clienteService.findOne(id);
-		if (cliente==null) {
-			flash.addFlashAttribute("error","El cliente no existe en la base de datos");
+		if (cliente == null) {
+			flash.addFlashAttribute("error", "El cliente no existe en la base de datos");
 			return "redirect:/listar";
 		}
 		model.put("cliente", cliente);
@@ -57,17 +54,15 @@ public class ClienteController {
 		return "ver";
 	}
 
-	@RequestMapping(value = "/listar", method = RequestMethod.GET) // se puede usar tambien getMapping
-	public String listar(@RequestParam(name="page", defaultValue="0") int page, Model model) {
-		
+	@RequestMapping(value = "/listar", method = RequestMethod.GET)
+	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
+
 		Pageable pageRequest = new PageRequest(page, 5);
 		Page<Cliente> clientes = clienteService.findAll(pageRequest);
-		
-		PageRender<Cliente> pageRender = new PageRender<>("/listar",clientes);
-		
+
+		PageRender<Cliente> pageRender = new PageRender<>("/listar", clientes);
+
 		model.addAttribute("titulo", "Listado de clientes");
-		// model.addAttribute("clientes", clienteDao.findAll());
-//		model.addAttribute("clientes", clienteService.findAll());
 		model.addAttribute("clientes", clientes);
 		model.addAttribute("page", pageRender);
 		return "listar";
@@ -86,9 +81,8 @@ public class ClienteController {
 		Cliente cliente = null;
 
 		if (id > 0) {
-			// cliente = clienteDao.findOne(id);
 			cliente = clienteService.findOne(id);
-			if (cliente==null) {
+			if (cliente == null) {
 				flash.addFlashAttribute("error", "No existe el cliente");
 				return "redirect:/listar";
 			}
@@ -102,45 +96,37 @@ public class ClienteController {
 	}
 
 	@RequestMapping(value = "/form", method = RequestMethod.POST)
-	public String guardar(@Valid Cliente cliente, BindingResult result, RedirectAttributes flash, Model model, @RequestParam("file") MultipartFile foto, SessionStatus status) { // status
-																												// si
-																												// usas
-																												// SessionAttributes
+	public String guardar(@Valid Cliente cliente, BindingResult result, RedirectAttributes flash, Model model,
+			@RequestParam("file") MultipartFile foto, SessionStatus status) {
 
 		if (result.hasErrors()) {
 			model.addAttribute("titulo", "Formulario de cliente");
 			return "form";
 		}
-		
-		if(!foto.isEmpty()) {
-//			Path directorioRecursos = Paths.get("src//main//resources//static//upload"); path interno al proyecto
-//			String rootPath = directorioRecursos.toFile().getAbsolutePath(); path interno al proyecto
-//			String rootPath = "C://Temp//upload"; //directorio externo pero en cliente, no en servidor
-			String uniqueFilename = UUID.randomUUID().toString()+"_"+foto.getOriginalFilename();
-			Path rootPath = Paths.get("upload").resolve(uniqueFilename); /*C-SpringBoot-workspace-spring-boot-data-upload*/
+
+		if (!foto.isEmpty()) {
+			String uniqueFilename = UUID.randomUUID().toString() + "_" + foto.getOriginalFilename();
+			Path rootPath = Paths.get("upload").resolve(uniqueFilename);
 			Path rootAbsolutPath = rootPath.toAbsolutePath();
-			
-			log.info("rootPath: "+ rootPath);
-			log.info("rootAbsolutPath: "+rootAbsolutPath);
-			
+
+			log.info("rootPath: " + rootPath);
+			log.info("rootAbsolutPath: " + rootAbsolutPath);
+
 			try {
 				Files.copy(foto.getInputStream(), rootAbsolutPath);
-//				byte[] bytes = foto.getBytes();
-//				Path rutaCompleta = Paths.get(rootPath + "//" + foto.getOriginalFilename());
-//				Files.write(rutaCompleta, bytes);
-				flash.addFlashAttribute("info","Ha subido correctamente "+foto.getName());
-				
+				flash.addFlashAttribute("info", "Ha subido correctamente " + foto.getName());
+
 				cliente.setFoto(foto.getOriginalFilename());
 			} catch (IOException e) {
-				flash.addFlashAttribute("error","No se ha subido correctamente "+foto.getName());
+				flash.addFlashAttribute("error", "No se ha subido correctamente " + foto.getName());
 			}
-			
+
 		}
-		
-		String flashMessage = (cliente.getId()!=null)? "Cliente editado correctamente" : "Cliente creado correctamente";
-		// clienteDao.save(cliente);
+
+		String flashMessage = (cliente.getId() != null) ? "Cliente editado correctamente"
+				: "Cliente creado correctamente";
 		clienteService.save(cliente);
-		status.setComplete(); // se elimina el objeto cliente de la session
+		status.setComplete();
 		flash.addFlashAttribute("success", flashMessage);
 		return "redirect:listar";
 	}
@@ -149,7 +135,6 @@ public class ClienteController {
 	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 
 		if (id > 0) {
-			// clienteDao.delete(id);
 			clienteService.delete(id);
 		}
 		flash.addFlashAttribute("success", "Cliente borrado correctamente");
