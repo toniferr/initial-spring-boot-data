@@ -1,6 +1,7 @@
 package com.bolsaideas.springboot.app.controllers;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,7 +48,7 @@ public class ClienteController {
 
 	@GetMapping(value="/upload/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename){
-		Path pathFoto = Paths.get("uploads").resolve(filename).toAbsolutePath();
+		Path pathFoto = Paths.get("upload").resolve(filename).toAbsolutePath();
 		log.info("pathFoto: "+pathFoto);
 		Resource recurso = null;
 		try {
@@ -55,7 +56,7 @@ public class ClienteController {
 			if (!recurso.exists() && recurso.isReadable()) {
 				throw new RuntimeException("Error: no se puede cargar la imagen: "+ pathFoto);
 			}
-		}catch (Exception e){
+		}catch (MalformedURLException e){
 			log.error("error :"+e);
 		}
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ recurso.getFilename()+"\"").body(recurso);
@@ -136,7 +137,7 @@ public class ClienteController {
 				Files.copy(foto.getInputStream(), rootAbsolutPath);
 				flash.addFlashAttribute("info", "Ha subido correctamente " + foto.getName());
 
-				cliente.setFoto(foto.getOriginalFilename());
+				cliente.setFoto(uniqueFilename);
 			} catch (IOException e) {
 				flash.addFlashAttribute("error", "No se ha subido correctamente " + foto.getName());
 			}
